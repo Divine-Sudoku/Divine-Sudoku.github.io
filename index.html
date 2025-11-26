@@ -29,8 +29,10 @@
             font-family: 'Cormorant Garamond', serif; 
             color: var(--ink);
             min-height: 100vh;
+            /* CHANGED: Center content vertically instead of stretching it */
             display: flex;
             flex-direction: column;
+            justify-content: center; 
         }
 
         /* Unified UI Font Class */
@@ -129,7 +131,6 @@
         .tool-btn:active { opacity: 1; transform: scale(0.95); }
         .tool-btn i { font-size: 1.2rem; margin-bottom: 2px; }
         
-        /* Apply unified font style to tool button spans */
         .tool-btn span { 
             font-family: 'Montserrat', sans-serif;
             font-size: 0.65rem;
@@ -186,7 +187,8 @@
     </header>
 
     <!-- Game Board -->
-    <div id="game-container" class="relative animate-fade-in w-full flex-grow flex flex-col items-center justify-start" style="animation-delay: 0.1s;">
+    <!-- REMOVED flex-grow so it doesn't push contents apart -->
+    <div id="game-container" class="relative animate-fade-in w-full flex flex-col items-center justify-start" style="animation-delay: 0.1s;">
         
         <div class="sudoku-container relative">
             <div id="grid" class="sudoku-grid">
@@ -213,6 +215,7 @@
     </div>
 
     <!-- Stats & Controls Area -->
+    <!-- Standard top margin instead of pushing to bottom -->
     <div class="w-full max-w-[450px] mx-auto animate-fade-in flex flex-col gap-4 pb-4 mt-6 shrink-0" style="animation-delay: 0.2s;">
         
         <!-- Controls Row -->
