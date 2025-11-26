@@ -2,16 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Updated viewport for mobile: prevents zooming and ensures correct scaling -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Classy Sudoku</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --paper: #fbf8f3; /* Warm cream background */
+            --paper: #fbf8f3;
             --ink: #000000;
             --highlight: #e0e7ff; 
             --same-number: #c7d2fe;
@@ -19,7 +18,6 @@
             --error: #fecaca;
         }
 
-        /* Prevent tap highlight flicker on mobile & global selection reset */
         * {
             -webkit-tap-highlight-color: transparent;
             user-select: none;
@@ -30,17 +28,19 @@
             background-color: var(--paper);
             font-family: 'Cormorant Garamond', serif; 
             color: var(--ink);
-            /* Use dynamic viewport height for better mobile browser support */
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Distribute space vertically */
         }
 
-        .font-sans {
+        /* Unified UI Font Class */
+        .ui-text {
             font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            color: #57534e; /* stone-600 */
         }
 
         /* --- GRID SYSTEM --- */
@@ -51,8 +51,7 @@
             background-color: var(--ink); 
             padding: 0;
             width: 100%;
-            max-width: 450px; /* Max width for tablets/desktop */
-            /* Touch action none prevents scrolling when dragging on the board */
+            max-width: 450px;
             touch-action: none;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             position: relative; 
@@ -72,7 +71,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem; /* Slightly adjusted for better average fit */
+            font-size: 1.8rem;
             font-weight: 500;
             cursor: pointer;
             position: relative;
@@ -80,29 +79,18 @@
             box-sizing: border-box; 
         }
 
-        /* --- BORDER LOGIC --- */
+        /* Border Thickness Logic */
         .cell:nth-child(3n):not(:nth-child(9n))::after {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0; right: 0;
-            width: 1px; 
-            background-color: var(--ink);
-            pointer-events: none;
-            z-index: 10;
+            content: ''; position: absolute; top: 0; bottom: 0; right: 0;
+            width: 1px; background-color: var(--ink); pointer-events: none; z-index: 10;
         }
-
         .cell:nth-child(n+19):nth-child(-n+27)::before,
         .cell:nth-child(n+46):nth-child(-n+54)::before {
-            content: '';
-            position: absolute;
-            left: 0; right: 0; bottom: 0;
-            height: 1px; 
-            background-color: var(--ink);
-            pointer-events: none;
-            z-index: 10;
+            content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+            height: 1px; background-color: var(--ink); pointer-events: none; z-index: 10;
         }
 
-        /* Cell States */
+        /* States */
         .cell.initial { font-weight: 700; color: var(--ink); }
         .cell.user-input { color: #4b5563; font-family: 'Cormorant Garamond', serif; }
         .cell.selected { background-color: var(--selected) !important; }
@@ -110,7 +98,7 @@
         .cell.highlight-related { background-color: var(--highlight); }
         .cell.error { background-color: var(--error); color: #991b1b; }
 
-        /* UI Elements */
+        /* Buttons */
         .diff-btn {
             border: 1px solid var(--ink);
             background: transparent;
@@ -120,11 +108,10 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            padding: 0.5rem 1rem; /* Larger tap target */
+            padding: 0.5rem;
             transition: all 0.2s;
-            flex: 1; /* Distribute width evenly */
+            flex: 1;
         }
-        .diff-btn:hover { background-color: rgba(0,0,0,0.05); }
         .diff-btn.active { background-color: var(--ink); color: white; }
 
         .tool-btn {
@@ -134,88 +121,63 @@
             justify-content: center;
             gap: 2px;
             color: var(--ink);
-            opacity: 0.7;
+            opacity: 0.8;
             transition: opacity 0.2s;
-            padding: 0.5rem; /* Larger tap target */
+            padding: 0.5rem;
+            min-width: 40px;
         }
         .tool-btn:active { opacity: 1; transform: scale(0.95); }
-        .tool-btn i { font-size: 1.4rem; margin-bottom: 2px; }
+        .tool-btn i { font-size: 1.2rem; margin-bottom: 2px; }
+        
+        /* Apply unified font style to tool button spans */
         .tool-btn span { 
-            font-family: 'Montserrat', sans-serif; 
-            font-size: 0.65rem; 
-            text-transform: uppercase; 
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-weight: 700;
+            color: #57534e;
+            display: block !important; 
         }
 
+        /* Number Pad */
         .num-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
             transition: transform 0.1s;
-            padding: 0.5rem 0.2rem; /* Vertical padding for easier tapping */
-            flex: 1; /* Even distribution */
+            padding: 0.5rem 0.1rem;
+            flex: 1;
         }
         .num-btn:active { transform: scale(0.9); }
-        .num-btn .number {
-            font-size: 2rem; /* Larger numbers */
-            font-weight: 600;
-            line-height: 1;
-        }
-        .num-btn .rem {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.6rem;
-            color: #666;
-            margin-top: 2px;
-        }
+        .num-btn .number { font-size: 2rem; font-weight: 600; line-height: 1; }
+        .num-btn .rem { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; color: #666; margin-top: 2px; }
         .num-btn.completed { opacity: 0.2; pointer-events: none; }
 
         .game-overlay {
-            position: absolute;
-            inset: 0;
-            background-color: rgba(255, 255, 255, 0.95);
-            z-index: 50;
-            display: none; 
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 1.5rem;
-            backdrop-filter: blur(4px);
+            position: absolute; inset: 0; background-color: rgba(255, 255, 255, 0.95);
+            z-index: 50; display: none; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            padding: 1.5rem; backdrop-filter: blur(4px);
         }
         .game-overlay.flex { display: flex; }
-
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
         .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Mobile Specific Query for small screens */
         @media (max-width: 400px) {
-            .sudoku-container { width: 96%; } /* Add slight margin on sides */
-            .cell { font-size: 1.4rem; }
-            h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-            .tool-btn span { display: none; } /* Hide labels on very small screens if needed, or keep small */
-            .tool-btn i { font-size: 1.2rem; }
-            .diff-btn { padding: 0.4rem 0.2rem; font-size: 0.6rem; letter-spacing: 0; }
-        }
-
-        /* Landscape handling */
-        @media (max-height: 600px) and (orientation: landscape) {
-            body { flex-direction: row; padding: 1rem; align-items: center; }
-            .sudoku-container { height: 90vh; width: 90vh; max-width: none; }
-            header { display: none; } /* Hide header in short landscape to fit game */
+            .sudoku-container { width: 96%; }
+            h1 { font-size: 2.5rem; }
         }
     </style>
 </head>
-<body class="p-2 sm:p-4">
+<body class="p-2 sm:p-4 min-h-screen">
 
-    <!-- Header Section -->
-    <header class="text-center w-full max-w-lg mx-auto animate-fade-in pt-2">
+    <!-- Header -->
+    <header class="text-center w-full max-w-lg mx-auto animate-fade-in pt-2 shrink-0">
         <h1 class="text-4xl sm:text-5xl font-bold text-black mb-3 tracking-tight">Sudoku</h1>
         
-        <div class="flex justify-center w-full shadow-sm">
+        <div class="flex justify-center w-full shadow-sm mb-4">
             <button onclick="setDifficulty('easy')" class="diff-btn rounded-l-md border-r-0" id="btn-easy">Serene</button>
             <button onclick="setDifficulty('medium')" class="diff-btn border-r-0" id="btn-medium">Refined</button>
             <button onclick="setDifficulty('hard')" class="diff-btn border-r-0" id="btn-hard">Elegant</button>
@@ -223,65 +185,66 @@
         </div>
     </header>
 
-    <!-- Game Board Area - Flex Grow to take available space -->
-    <div id="game-container" class="relative animate-fade-in w-full flex-grow flex flex-col justify-center items-center py-2" style="animation-delay: 0.1s;">
+    <!-- Game Board -->
+    <div id="game-container" class="relative animate-fade-in w-full flex-grow flex flex-col items-center justify-start" style="animation-delay: 0.1s;">
         
         <div class="sudoku-container relative">
             <div id="grid" class="sudoku-grid">
                 <!-- Cells generated by JS -->
             </div>
 
-            <!-- Win Overlay -->
+            <!-- Overlays -->
             <div id="win-overlay" class="game-overlay">
                 <h2 class="text-4xl text-black mb-2 italic">Magnificent</h2>
                 <p class="font-sans text-stone-600 mb-6 uppercase tracking-widest text-xs">Puzzle Complete</p>
                 <div id="final-time" class="font-sans text-lg font-bold mb-6"></div>
-                <button onclick="startNewGame()" class="px-8 py-3 bg-black text-white hover:bg-stone-800 transition font-sans text-sm tracking-widest uppercase shadow-lg active:scale-95 transform">
+                <button onclick="startNewGame()" class="px-8 py-3 bg-black text-white hover:bg-stone-800 transition font-sans text-sm tracking-widest uppercase shadow-lg">
                     Play Again
                 </button>
             </div>
-
-            <!-- Game Over Overlay -->
             <div id="loss-overlay" class="game-overlay">
                 <h2 class="text-4xl text-black mb-2 italic">Game Over</h2>
                 <p class="font-sans text-stone-600 mb-6 uppercase tracking-widest text-xs">Too many mistakes</p>
-                <button onclick="startNewGame()" class="px-8 py-3 bg-black text-white hover:bg-stone-800 transition font-sans text-sm tracking-widest uppercase shadow-lg active:scale-95 transform">
+                <button onclick="startNewGame()" class="px-8 py-3 bg-black text-white hover:bg-stone-800 transition font-sans text-sm tracking-widest uppercase shadow-lg">
                     Try Again
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Controls Section - Sticks to bottom comfortably -->
-    <div class="w-full max-w-[450px] mx-auto animate-fade-in flex flex-col gap-3 pb-safe" style="animation-delay: 0.2s;">
+    <!-- Stats & Controls Area -->
+    <div class="w-full max-w-[450px] mx-auto animate-fade-in flex flex-col gap-4 pb-4 mt-6 shrink-0" style="animation-delay: 0.2s;">
         
-        <!-- Tools Row -->
-        <div class="flex justify-between items-end px-2 border-b border-stone-300 pb-2">
+        <!-- Controls Row -->
+        <div class="flex justify-between items-end px-4 border-b border-stone-300 pb-3">
             
-            <div class="flex flex-col items-start gap-1">
-                <!-- Toggle Switch for Strict Mode -->
-                <div class="flex items-center gap-2 mb-1 pl-2">
-                    <label class="relative inline-flex items-center cursor-pointer tap-highlight-transparent">
-                        <input type="checkbox" id="strict-mode-toggle" class="sr-only peer" checked onchange="toggleStrictMode()">
-                        <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-black shadow-inner"></div>
-                        <span class="ml-2 font-sans text-[0.65rem] uppercase tracking-wider text-stone-600 font-bold">Strict</span>
-                    </label>
-                </div>
+            <!-- Left Side: Config & Stats -->
+            <div class="flex flex-col items-start gap-4">
                 
-                <!-- Status Indicators (Mistakes & Time) -->
-                <div class="flex gap-4 pl-1">
-                    <div class="tool-btn cursor-default items-start p-0 opacity-100">
-                        <span class="text-lg font-bold leading-tight" id="mistakes-display">0/3</span>
-                        <span class="text-[0.6rem] text-stone-500">Mistakes</span>
+                <!-- Toggle Switch -->
+                <label class="relative inline-flex items-center cursor-pointer tap-highlight-transparent">
+                    <input type="checkbox" id="strict-mode-toggle" class="sr-only peer" checked onchange="toggleStrictMode()">
+                    <div class="w-9 h-5 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-black"></div>
+                    <span class="ml-2 ui-text">Strict</span>
+                </label>
+
+                <!-- Mistakes & Time -->
+                <div class="flex gap-6">
+                    <div class="flex flex-col items-start">
+                        <span class="text-lg font-bold leading-none text-black mb-0.5" id="mistakes-display">0/3</span>
+                        <span class="ui-text">Mistakes</span>
                     </div>
-                    <div class="tool-btn cursor-default items-start p-0 opacity-100">
-                        <span class="text-lg font-bold leading-tight" id="timer-display">00:00</span>
-                        <span class="text-[0.6rem] text-stone-500">Time</span>
+                    
+                    <div class="flex flex-col items-start">
+                        <span class="text-lg font-bold leading-none text-black mb-0.5" id="timer-display">00:00</span>
+                        <span class="ui-text">Time</span>
                     </div>
                 </div>
+
             </div>
 
-            <div class="flex gap-2 sm:gap-6">
+            <!-- Right Side: Action Buttons -->
+            <div class="flex gap-4 sm:gap-6 pb-0.5">
                 <button onclick="undo()" class="tool-btn">
                     <i class="fas fa-undo"></i>
                     <span>Undo</span>
@@ -297,8 +260,8 @@
             </div>
         </div>
 
-        <!-- Numbers Row (Larger for mobile) -->
-        <div class="flex justify-between items-end w-full" id="numpad">
+        <!-- Numbers Row -->
+        <div class="flex justify-between items-end w-full pt-1" id="numpad">
             <!-- Generated by JS -->
         </div>
 
@@ -307,28 +270,14 @@
 <script>
     // --- Game State ---
     const STATE = {
-        grid: [], 
-        solution: [], 
-        initial: [], 
-        selected: null, 
-        difficulty: 'easy',
-        mistakes: 0,
-        history: [],
-        gameOver: false,
-        strictMode: true, 
-        timer: 0,
-        timerInterval: null,
-        isTimerRunning: false
+        grid: [], solution: [], initial: [], selected: null, 
+        difficulty: 'easy', mistakes: 0, history: [], gameOver: false,
+        strictMode: true, timer: 0, timerInterval: null, isTimerRunning: false
     };
 
-    const DIFFICULTY_HOLES = {
-        'easy': 30,
-        'medium': 40,
-        'hard': 50,
-        'expert': 60
-    };
+    const DIFFICULTY_HOLES = { 'easy': 30, 'medium': 40, 'hard': 50, 'expert': 60 };
 
-    // --- Core Logic: Sudoku Generation ---
+    // --- Core Logic ---
 
     function generateSudoku() {
         stopTimer();
@@ -336,20 +285,14 @@
         updateTimerUI();
 
         const grid = Array(81).fill(0);
-        fillDiagonalBox(grid, 0);
-        fillDiagonalBox(grid, 4);
-        fillDiagonalBox(grid, 8);
+        fillDiagonalBox(grid, 0); fillDiagonalBox(grid, 4); fillDiagonalBox(grid, 8);
         solveSudoku(grid);
         STATE.solution = [...grid];
         
-        const attempts = DIFFICULTY_HOLES[STATE.difficulty];
-        let holes = attempts;
+        let holes = DIFFICULTY_HOLES[STATE.difficulty];
         while (holes > 0) {
             let idx = Math.floor(Math.random() * 81);
-            if (grid[idx] !== 0) {
-                grid[idx] = 0;
-                holes--;
-            }
+            if (grid[idx] !== 0) { grid[idx] = 0; holes--; }
         }
 
         STATE.grid = [...grid];
@@ -364,7 +307,6 @@
 
         renderBoard();
         updateUI();
-        
         document.getElementById('win-overlay').classList.remove('flex');
         document.getElementById('loss-overlay').classList.remove('flex');
     }
@@ -473,7 +415,7 @@
                 <span class="rem" id="count-${i}">9</span>
             `;
             btn.onclick = (e) => {
-                e.preventDefault(); // Prevent double firing on touch
+                e.preventDefault(); 
                 inputNumber(i);
             };
             numpadEl.appendChild(btn);
@@ -499,9 +441,7 @@
         const btns = document.querySelectorAll('.diff-btn');
         btns.forEach(btn => {
             btn.classList.remove('active');
-            if(btn.id === `btn-${STATE.difficulty}`) {
-                btn.classList.add('active');
-            }
+            if(btn.id === `btn-${STATE.difficulty}`) btn.classList.add('active');
         });
     }
 
@@ -511,9 +451,7 @@
         startNewGame();
     }
 
-    function startNewGame() {
-        generateSudoku();
-    }
+    function startNewGame() { generateSudoku(); }
 
     function toggleStrictMode() {
         const toggleEl = document.getElementById('strict-mode-toggle');
@@ -534,21 +472,13 @@
             if (STATE.selected !== null) {
                 const selectedIdx = STATE.selected;
                 const selectedVal = STATE.grid[selectedIdx];
-                const r = Math.floor(i / 9);
-                const c = i % 9;
-                const selR = Math.floor(selectedIdx / 9);
-                const selC = selectedIdx % 9;
+                const r = Math.floor(i / 9); const c = i % 9;
+                const selR = Math.floor(selectedIdx / 9); const selC = selectedIdx % 9;
 
-                if (i === selectedIdx) {
-                    cell.classList.add('selected');
-                }
-                else if (selectedVal !== 0 && val === selectedVal) {
-                    cell.classList.add('highlight-same');
-                }
-                else if (r === selR || c === selC || 
-                        (Math.floor(r/3) === Math.floor(selR/3) && Math.floor(c/3) === Math.floor(selC/3))) {
+                if (i === selectedIdx) cell.classList.add('selected');
+                else if (selectedVal !== 0 && val === selectedVal) cell.classList.add('highlight-same');
+                else if (r === selR || c === selC || (Math.floor(r/3)===Math.floor(selR/3) && Math.floor(c/3)===Math.floor(selC/3))) 
                    cell.classList.add('highlight-related');
-                }
             }
         });
         updateCounts();
@@ -562,14 +492,9 @@
             const remaining = 9 - counts[i];
             const el = document.getElementById(`count-${i}`);
             const btn = el.parentElement;
-            
             el.textContent = remaining > 0 ? `${remaining}` : '✓';
-            
-            if (remaining <= 0) {
-                btn.classList.add('completed');
-            } else {
-                btn.classList.remove('completed');
-            }
+            if (remaining <= 0) btn.classList.add('completed');
+            else btn.classList.remove('completed');
         }
 
         if (!STATE.grid.includes(0) && (STATE.mistakes < 3 || !STATE.strictMode) && !STATE.gameOver) {
@@ -582,10 +507,7 @@
                 stopTimer();
                 const finalTime = updateTimerUI();
                 document.getElementById('final-time').textContent = `Time: ${finalTime}`;
-                
-                setTimeout(() => {
-                    document.getElementById('win-overlay').classList.add('flex');
-                }, 500);
+                setTimeout(() => document.getElementById('win-overlay').classList.add('flex'), 500);
             }
         }
     }
@@ -604,41 +526,27 @@
 
     function inputNumber(num) {
         if (STATE.selected === null || STATE.gameOver) return;
-
-        if (!STATE.isTimerRunning && !STATE.gameOver) {
-            startTimer();
-        }
+        if (!STATE.isTimerRunning && !STATE.gameOver) startTimer();
 
         const idx = STATE.selected;
         if (STATE.initial[idx]) return;
 
         STATE.history.push({idx: idx, oldVal: STATE.grid[idx]});
 
-        if (num === 0) {
-            STATE.grid[idx] = 0;
-            renderBoard();
-            return;
-        }
+        if (num === 0) { STATE.grid[idx] = 0; renderBoard(); return; }
 
         if (num !== STATE.solution[idx]) {
             STATE.mistakes++;
             updateUI();
-            
             const cell = document.querySelector(`.cell[data-index="${idx}"]`);
             cell.textContent = num;
             cell.classList.add('error');
-            
-            setTimeout(() => {
-                cell.classList.remove('error');
-                cell.textContent = ''; 
-            }, 500);
+            setTimeout(() => { cell.classList.remove('error'); cell.textContent = ''; }, 500);
 
             if (STATE.strictMode && STATE.mistakes >= 3) {
                 STATE.gameOver = true;
                 stopTimer();
-                setTimeout(() => {
-                    document.getElementById('loss-overlay').classList.add('flex');
-                }, 700);
+                setTimeout(() => document.getElementById('loss-overlay').classList.add('flex'), 700);
             }
         } else {
             STATE.grid[idx] = num;
@@ -646,9 +554,7 @@
         }
     }
 
-    function eraseCell() {
-        inputNumber(0);
-    }
+    function eraseCell() { inputNumber(0); }
 
     function undo() {
         if (STATE.history.length === 0 || STATE.gameOver) return;
@@ -660,11 +566,7 @@
 
     function updateUI() {
         const display = document.getElementById('mistakes-display');
-        if (STATE.strictMode) {
-            display.textContent = `${STATE.mistakes}/3`;
-        } else {
-            display.textContent = `${STATE.mistakes}`;
-        }
+        display.textContent = STATE.strictMode ? `${STATE.mistakes}/3` : `${STATE.mistakes}`;
     }
 
     window.onload = init;
